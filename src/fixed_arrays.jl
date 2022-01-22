@@ -57,18 +57,14 @@ macro fixed_vector(name, parent)
         end
         $(name){S,T}(x::StaticVector) where {S,T} = $(name){S,T}(Tuple(x))
 
-        @generated function (::Type{$(name){S,T}})(x::$(name)) where {S,T}
-            idx = [:(x[$i]) for i in 1:S]
-            return quote
-                $($(name)){S,T}($(idx...))
-            end
+        function (::Type{$(name){S,T}})(x::$(name)) where {S,T}
+            idx = ntuple(i -> x[i], S)
+            return $(name){S,T}(idx)
         end
 
-        @generated function Base.convert(::Type{$(name){S,T}}, x::$(name)) where {S,T}
-            idx = [:(x[$i]) for i in 1:S]
-            return quote
-                $($(name)){S,T}($(idx...))
-            end
+        function Base.convert(::Type{$(name){S,T}}, x::$(name)) where {S,T}
+            idx = ntuple(i -> x[i], S)
+            return $(name){S,T}(idx)
         end
 
         @generated function (::Type{SV})(x::StaticVector) where {SV <: $(name)}
