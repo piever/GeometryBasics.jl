@@ -114,6 +114,11 @@ NFace = NgonFace
           (LineFace{Int}(1, 2), LineFace{Int}(2, 3), LineFace{Int}(3, 4),
            LineFace{Int}(4, 1))
 
+    @inferred convert_simplex(NFace{3,OffsetInteger{3,Int}},
+                              NFace{4,OffsetInteger{2,Int}}(1, 2, 3, 4))
+
+    @inferred convert_simplex(LineFace{Int}, QuadFace{Int}(1, 2, 3, 4))
+
     @testset "NgonFace ambiguity" begin
         face = NgonFace((1, 2))
         @test convert_simplex(NgonFace{2,UInt32}, face) === (NgonFace{2,UInt32}((1, 2)),)
